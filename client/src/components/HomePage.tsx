@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Link } from "wouter";
 import heroImage from "@assets/generated_images/Hero_musical_scene_bb6ab737.png";
 
+
 export default function HomePage() {
   const features = [
     {
@@ -27,6 +28,7 @@ export default function HomePage() {
     }
   ];
 
+
   const genres = [
     { name: "Pop", color: "from-pink-500 to-purple-600", path: "/genre/pop" },
     { name: "Classical", color: "from-yellow-600 to-red-800", path: "/genre/classical" },
@@ -34,6 +36,7 @@ export default function HomePage() {
     { name: "Qawwali", color: "from-emerald-500 to-amber-500", path: "/genre/qawwali" },
     { name: "Folk", color: "from-amber-700 to-orange-500", path: "/genre/folk" }
   ];
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -63,7 +66,7 @@ export default function HomePage() {
               <Link href="/studio">
                 <Button 
                   size="lg" 
-                  className="text-lg px-8 bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20"
+                  className="text-lg px-8 bg-black bg-opacity-50 backdrop-blur-md border border-white/20 text-white hover:bg-black hover:bg-opacity-70"
                   data-testid="button-start-studio"
                 >
                   <Play className="mr-2 h-5 w-5" />
@@ -73,7 +76,7 @@ export default function HomePage() {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="text-lg px-8 bg-white/5 backdrop-blur-md border-white/30 text-white hover:bg-white/15"
+                className="text-lg px-8 bg-black bg-opacity-40 backdrop-blur-md border-white/30 text-white hover:bg-black hover:bg-opacity-60"
                 data-testid="button-explore-genres"
               >
                 <Music className="mr-2 h-5 w-5" />
@@ -83,14 +86,16 @@ export default function HomePage() {
           </motion.div>
         </div>
 
+
         <motion.div
           className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
-          <div className="text-white/60 text-sm">Scroll to explore</div>
+          <div className="text-white text-opacity-90 text-sm drop-shadow-md font-semibold">Scroll to explore</div>
         </motion.div>
       </div>
+
 
       <div className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
@@ -105,6 +110,7 @@ export default function HomePage() {
               Interactive, musical, and lively - everything you need to explore music
             </p>
           </motion.div>
+
 
           <div className="grid md:grid-cols-3 gap-8 mb-24">
             {features.map((feature, index) => (
@@ -125,6 +131,7 @@ export default function HomePage() {
               </motion.div>
             ))}
           </div>
+
 
           <div className="mb-24">
             <h2 className="text-3xl font-bold mb-8 text-center">Explore Music Styles</h2>
@@ -148,6 +155,7 @@ export default function HomePage() {
               ))}
             </div>
           </div>
+
 
           <motion.div
             className="text-center bg-gradient-to-r from-primary/10 to-accent/10 rounded-md p-12"
