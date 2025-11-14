@@ -24,15 +24,15 @@ function Router() {
 
 function App() {
   // Persisted dark mode toggle
-  const [darkMode, setDarkMode] = React.useState(() => {
+  const [darkMode, setDarkMode] = React.useState<boolean>(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("darkMode");
-      if (saved === "true") return true;
-      if (saved === "false") return false;
-      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const saved = localStorage.getItem("harmonica-theme");
+      if (saved !== null) return JSON.parse(saved);
+      return true;
     }
-    return false;
+    return true;
   });
+
 
   React.useEffect(() => {
     if (darkMode) {
@@ -40,8 +40,9 @@ function App() {
     } else {
       document.documentElement.classList.remove("dark");
     }
-    localStorage.setItem("darkMode", darkMode ? "true" : "false");
+    localStorage.setItem("harmonica-theme", JSON.stringify(darkMode));
   }, [darkMode]);
+
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -50,7 +51,7 @@ function App() {
         {/* Dark mode toggle placed top right, visible on all pages */}
         <div className="fixed top-5 right-6 z-50">
           <button
-            onClick={() => setDarkMode((prev) => !prev)}
+            onClick={() => setDarkMode((prev: boolean) => !prev)}
             className="px-3 py-2 rounded bg-gray-300 dark:bg-gray-700 shadow text-black dark:text-white"
           >
             {darkMode ? "Light Mode" : "Dark Mode"}
