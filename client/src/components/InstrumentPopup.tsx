@@ -3,6 +3,7 @@ import { X, Play, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link } from "wouter";
+import { playInstrumentSample } from "@/lib/audioUtils";
 
 interface Instrument {
   name: string;
@@ -18,7 +19,7 @@ interface InstrumentPopupProps {
 
 export default function InstrumentPopup({ instrument, onClose }: InstrumentPopupProps) {
   const playAudio = () => {
-    console.log(`Playing audio sample: ${instrument.audioSample}`);
+    playInstrumentSample(instrument.audioSample);
   };
 
   return (

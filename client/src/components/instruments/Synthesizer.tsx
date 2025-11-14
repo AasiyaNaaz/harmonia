@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Slider } from "@/components/ui/slider";
+import { playSynthPad, resumeAudioContext } from "@/lib/audioUtils";
 
 interface SynthPad {
   id: string;
@@ -24,9 +25,18 @@ export default function Synthesizer() {
   const [volume, setVolume] = useState([75]);
   const [filter, setFilter] = useState([50]);
 
-  const triggerPad = (padId: string) => {
+  useEffect(() => {
+    const handleInteraction = () => {
+      resumeAudioContext();
+      document.removeEventListener('click', handleInteraction);
+    };
+    document.addEventListener('click', handleInteraction);
+    return () => document.removeEventListener('click', handleInteraction);
+  }, []);
+
+  const triggerPad = (padId: string, index: number) => {
     setActivePad(padId);
-    console.log(`Triggering synth pad: ${padId}`);
+    playSynthPad(index);
     setTimeout(() => setActivePad(null), 300);
   };
 
@@ -34,7 +44,7 @@ export default function Synthesizer() {
     <div className="w-full max-w-3xl mx-auto">
       <div className="bg-gradient-to-br from-muted to-muted/50 rounded-md p-8">
         <div className="grid grid-cols-4 gap-4 mb-8">
-          {SYNTH_PADS.map((pad) => (
+          {SYNTH_PADS.map((pad, index) => (
             <motion.button
               key={pad.id}
               className={`
@@ -44,7 +54,7 @@ export default function Synthesizer() {
                 transition-all duration-100
                 ${activePad === pad.id ? "ring-4 ring-white scale-95" : "hover:scale-105"}
               `}
-              onClick={() => triggerPad(pad.id)}
+              onClick={() => triggerPad(pad.id, index)}
               whileTap={{ scale: 0.9 }}
               data-testid={`synth-${pad.id}`}
             >

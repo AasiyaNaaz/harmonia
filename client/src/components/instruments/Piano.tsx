@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { playPianoNote, resumeAudioContext } from "@/lib/audioUtils";
 
 const WHITE_KEYS = ["C", "D", "E", "F", "G", "A", "B", "C2", "D2", "E2", "F2", "G2"];
 const BLACK_KEYS = [
@@ -15,9 +16,19 @@ const BLACK_KEYS = [
 export default function Piano() {
   const [activeKey, setActiveKey] = useState<string | null>(null);
 
+  useEffect(() => {
+    // Resume audio context on first user interaction
+    const handleInteraction = () => {
+      resumeAudioContext();
+      document.removeEventListener('click', handleInteraction);
+    };
+    document.addEventListener('click', handleInteraction);
+    return () => document.removeEventListener('click', handleInteraction);
+  }, []);
+
   const playNote = (note: string) => {
     setActiveKey(note);
-    console.log(`Playing note: ${note}`);
+    playPianoNote(note);
     setTimeout(() => setActiveKey(null), 200);
   };
 

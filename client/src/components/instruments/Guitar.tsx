@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { playGuitarString, resumeAudioContext } from "@/lib/audioUtils";
 
 const STRINGS = [
   { note: "E", thickness: "h-1" },
@@ -13,9 +14,18 @@ const STRINGS = [
 export default function Guitar() {
   const [activeString, setActiveString] = useState<number | null>(null);
 
+  useEffect(() => {
+    const handleInteraction = () => {
+      resumeAudioContext();
+      document.removeEventListener('click', handleInteraction);
+    };
+    document.addEventListener('click', handleInteraction);
+    return () => document.removeEventListener('click', handleInteraction);
+  }, []);
+
   const pluckString = (index: number, note: string) => {
     setActiveString(index);
-    console.log(`Plucking string: ${note}`);
+    playGuitarString(index);
     setTimeout(() => setActiveString(null), 300);
   };
 

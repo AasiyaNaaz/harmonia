@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { playDrum, resumeAudioContext } from "@/lib/audioUtils";
 
 interface DrumPad {
   id: string;
@@ -22,9 +23,18 @@ const DRUM_PADS: DrumPad[] = [
 export default function DrumKit() {
   const [activePad, setActivePad] = useState<string | null>(null);
 
+  useEffect(() => {
+    const handleInteraction = () => {
+      resumeAudioContext();
+      document.removeEventListener('click', handleInteraction);
+    };
+    document.addEventListener('click', handleInteraction);
+    return () => document.removeEventListener('click', handleInteraction);
+  }, []);
+
   const hitDrum = (drumId: string) => {
     setActivePad(drumId);
-    console.log(`Hitting drum: ${drumId}`);
+    playDrum(drumId);
     setTimeout(() => setActivePad(null), 200);
   };
 
