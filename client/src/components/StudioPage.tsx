@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { 
   Music, 
@@ -7,15 +7,25 @@ import {
   Repeat, 
   Sparkles, 
   Clock, 
-  Layers, 
-  Settings
+  Trash2, 
+  Square
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import Piano from "@/components/instruments/Piano";
 import DrumKit from "@/components/instruments/DrumKit";
 import Guitar from "@/components/instruments/Guitar";
 import Synthesizer from "@/components/instruments/Synthesizer";
+import { recordingManager } from "@/lib/recordingManager";
+import { useToast } from "@/hooks/use-toast";
 
 type InstrumentType = "piano" | "drums" | "guitar" | "synth";
 
@@ -23,6 +33,22 @@ export default function StudioPage() {
   const [activeInstrument, setActiveInstrument] = useState<InstrumentType>("piano");
   const [isRecording, setIsRecording] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLooping, setIsLooping] = useState(false);
+  const [tempo, setTempo] = useState(120);
+  const [showTempoDialog, setShowTempoDialog] = useState(false);
+  const [showFXDialog, setShowFXDialog] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const updateState = () => {
+      setIsRecording(recordingManager.getIsRecording());
+      setIsPlaying(recordingManager.getIsPlaying());
+      setIsLooping(recordingManager.getIsLooping());
+    };
+    
+    recordingManager.onStateChange(updateState);
+    updateState(); // Initial state
+  }, []);
 
   const instruments: { id: InstrumentType; name: string; icon: string }[] = [
     { id: "piano", name: "Piano", icon: "🎹" },
@@ -31,31 +57,71 @@ export default function StudioPage() {
     { id: "synth", name: "Synth", icon: "🎛️" }
   ];
 
-  const controls = [
-    { 
-      icon: Circle, 
-      label: "Record", 
-      active: isRecording,
-      onClick: () => {
-        setIsRecording(!isRecording);
-        console.log("Record toggled:", !isRecording);
-      }
-    },
-    { 
-      icon: Play, 
-      label: "Play", 
-      active: isPlaying,
-      onClick: () => {
-        setIsPlaying(!isPlaying);
-        console.log("Play toggled:", !isPlaying);
-      }
-    },
-    { icon: Repeat, label: "Loop", active: false, onClick: () => console.log("Loop clicked") },
-    { icon: Sparkles, label: "FX", active: false, onClick: () => console.log("FX clicked") },
-    { icon: Clock, label: "Tempo", active: false, onClick: () => console.log("Tempo clicked") },
-    { icon: Layers, label: "Tracks", active: false, onClick: () => console.log("Tracks clicked") },
-    { icon: Settings, label: "Settings", active: false, onClick: () => console.log("Settings clicked") }
-  ];
+  const handleRecord = () => {
+    if (isRecording) {
+      recordingManager.stopRecording();
+      setIsRecording(false);
+      toast({
+        title: "Recording stopped",
+        description: "Your performance has been saved."
+      });
+    } else {
+      recordingManager.startRecording();
+      setIsRecording(true);
+      toast({
+        title: "Recording started",
+        description: "Play your instrument to record."
+      });
+    }
+  };
+
+  const handlePlay = () => {
+    if (!recordingManager.hasRecording()) {
+      toast({
+        title: "No recording",
+        description: "Record something first before playing.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (isPlaying) {
+      recordingManager.stop();
+      setIsPlaying(false);
+    } else {
+      recordingManager.play();
+      setIsPlaying(true);
+    }
+  };
+
+  const handleLoop = () => {
+    const looping = recordingManager.toggleLoop();
+    setIsLooping(looping);
+    toast({
+      title: looping ? "Loop enabled" : "Loop disabled",
+      description: looping ? "Recording will repeat when you press Play." : "Recording will play once."
+    });
+  };
+
+  const handleClear = () => {
+    recordingManager.clearCurrentTrack();
+    setIsRecording(false);
+    setIsPlaying(false);
+    toast({
+      title: "Recording cleared",
+      description: "All notes have been removed."
+    });
+  };
+
+  const handleTempoChange = (value: number[]) => {
+    const newTempo = value[0];
+    setTempo(newTempo);
+    recordingManager.setTempo(newTempo);
+    toast({
+      title: "Tempo updated",
+      description: `Playback speed set to ${newTempo} BPM`
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
@@ -105,25 +171,116 @@ export default function StudioPage() {
 
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-6">
-              <Settings className="h-5 w-5 text-primary" />
+              <Music className="h-5 w-5 text-primary" />
               <h2 className="text-xl font-semibold">Studio Controls</h2>
             </div>
             <div className="flex flex-wrap gap-3">
-              {controls.map((control, index) => (
-                <Button
-                  key={control.label}
-                  variant={control.active ? "default" : "outline"}
-                  className="flex items-center gap-2"
-                  onClick={control.onClick}
-                  data-testid={`button-control-${control.label.toLowerCase()}`}
-                >
-                  <control.icon className="h-4 w-4" />
-                  {control.label}
-                </Button>
-              ))}
+              <Button
+                variant={isRecording ? "default" : "outline"}
+                className="flex items-center gap-2"
+                onClick={handleRecord}
+                data-testid="button-control-record"
+              >
+                <Circle className={`h-4 w-4 ${isRecording ? "fill-current" : ""}`} />
+                {isRecording ? "Stop Recording" : "Record"}
+              </Button>
+              
+              <Button
+                variant={isPlaying ? "default" : "outline"}
+                className="flex items-center gap-2"
+                onClick={handlePlay}
+                data-testid="button-control-play"
+                disabled={!recordingManager.hasRecording()}
+              >
+                {isPlaying ? <Square className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                {isPlaying ? "Stop" : "Play"}
+              </Button>
+              
+              <Button
+                variant={isLooping ? "default" : "outline"}
+                className="flex items-center gap-2"
+                onClick={handleLoop}
+                data-testid="button-control-loop"
+              >
+                <Repeat className="h-4 w-4" />
+                Loop
+              </Button>
+              
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => setShowTempoDialog(true)}
+                data-testid="button-control-tempo"
+                disabled={isPlaying}
+              >
+                <Clock className="h-4 w-4" />
+                Tempo ({tempo} BPM)
+              </Button>
+              
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => setShowFXDialog(true)}
+                data-testid="button-control-fx"
+              >
+                <Sparkles className="h-4 w-4" />
+                FX
+              </Button>
+              
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={handleClear}
+                data-testid="button-control-clear"
+                disabled={!recordingManager.hasRecording()}
+              >
+                <Trash2 className="h-4 w-4" />
+                Clear
+              </Button>
             </div>
           </Card>
         </div>
+
+        <Dialog open={showTempoDialog} onOpenChange={setShowTempoDialog}>
+          <DialogContent data-testid="dialog-tempo">
+            <DialogHeader>
+              <DialogTitle>Adjust Tempo</DialogTitle>
+              <DialogDescription>
+                Change the playback speed (40-240 BPM)
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm text-muted-foreground">Tempo</span>
+                <span className="text-2xl font-bold">{tempo} BPM</span>
+              </div>
+              <Slider
+                value={[tempo]}
+                onValueChange={handleTempoChange}
+                min={40}
+                max={240}
+                step={1}
+                data-testid="slider-tempo"
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={showFXDialog} onOpenChange={setShowFXDialog}>
+          <DialogContent data-testid="dialog-fx">
+            <DialogHeader>
+              <DialogTitle>Audio Effects</DialogTitle>
+              <DialogDescription>
+                Add effects to your recording (Coming soon!)
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-6 space-y-4">
+              <div className="text-sm text-muted-foreground text-center">
+                Audio effects like reverb, delay, and distortion will be available in a future update.
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

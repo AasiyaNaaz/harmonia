@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { playGuitarString, resumeAudioContext } from "@/lib/audioUtils";
+import { recordingManager } from "@/lib/recordingManager";
 
 const STRINGS = [
   { note: "E", thickness: "h-1" },
@@ -23,9 +24,11 @@ export default function Guitar() {
     return () => document.removeEventListener('click', handleInteraction);
   }, []);
 
-  const pluckString = (index: number, note: string) => {
+  const pluckString = async (index: number, note: string) => {
+    await resumeAudioContext();
     setActiveString(index);
     playGuitarString(index);
+    recordingManager.recordNote('guitar', index);
     setTimeout(() => setActiveString(null), 300);
   };
 

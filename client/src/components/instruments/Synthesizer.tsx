@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Slider } from "@/components/ui/slider";
 import { playSynthPad, resumeAudioContext } from "@/lib/audioUtils";
+import { recordingManager } from "@/lib/recordingManager";
 
 interface SynthPad {
   id: string;
@@ -34,9 +35,11 @@ export default function Synthesizer() {
     return () => document.removeEventListener('click', handleInteraction);
   }, []);
 
-  const triggerPad = (padId: string, index: number) => {
+  const triggerPad = async (padId: string, index: number) => {
+    await resumeAudioContext();
     setActivePad(padId);
     playSynthPad(index);
+    recordingManager.recordNote('synth', index);
     setTimeout(() => setActivePad(null), 300);
   };
 

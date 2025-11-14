@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { playDrum, resumeAudioContext } from "@/lib/audioUtils";
+import { recordingManager } from "@/lib/recordingManager";
 
 interface DrumPad {
   id: string;
@@ -32,9 +33,11 @@ export default function DrumKit() {
     return () => document.removeEventListener('click', handleInteraction);
   }, []);
 
-  const hitDrum = (drumId: string) => {
+  const hitDrum = async (drumId: string) => {
+    await resumeAudioContext();
     setActivePad(drumId);
     playDrum(drumId);
+    recordingManager.recordNote('drums', drumId);
     setTimeout(() => setActivePad(null), 200);
   };
 
