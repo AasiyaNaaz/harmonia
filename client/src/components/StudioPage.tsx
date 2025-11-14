@@ -12,10 +12,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import Piano from "./instruments/Piano";
-import DrumKit from "./instruments/DrumKit";
-import Guitar from "./instruments/Guitar";
-import Synthesizer from "./instruments/Synthesizer";
+import Piano from "@/components/instruments/Piano";
+import DrumKit from "@/components/instruments/DrumKit";
+import Guitar from "@/components/instruments/Guitar";
+import Synthesizer from "@/components/instruments/Synthesizer";
 
 type InstrumentType = "piano" | "drums" | "guitar" | "synth";
 
