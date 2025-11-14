@@ -1,5 +1,4 @@
 import GenrePage from '../GenrePage'
-import popArtist from '@assets/generated_images/Pop_artist_portrait_1_21770589.png'
 import pianoImg from '@assets/generated_images/Piano_instrument_photo_2822d5fc.png'
 import guitarImg from '@assets/generated_images/Acoustic_guitar_photo_72df9039.png'
 
@@ -19,18 +18,15 @@ export default function GenrePageExample() {
     artists: [
       {
         name: "Taylor Swift",
-        bio: "Contemporary pop icon known for storytelling and genre evolution",
-        image: popArtist
+        bio: "Contemporary pop icon known for storytelling and genre evolution"
       },
       {
         name: "The Weeknd",
-        bio: "R&B-influenced pop artist with distinctive vocal style",
-        image: popArtist
+        bio: "R&B-influenced pop artist with distinctive vocal style"
       },
       {
         name: "Ariana Grande",
-        bio: "Powerhouse vocalist blending pop and R&B influences",
-        image: popArtist
+        bio: "Powerhouse vocalist blending pop and R&B influences"
       }
     ],
     instruments: [

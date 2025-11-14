@@ -10,7 +10,6 @@ import InstrumentPopup from "./InstrumentPopup";
 interface Artist {
   name: string;
   bio: string;
-  image: string;
 }
 
 interface Instrument {
@@ -103,7 +102,7 @@ export default function GenrePage({ genre }: GenrePageProps) {
             <Users className="h-6 w-6 text-primary" />
             <h2 className="text-3xl font-bold">Notable Artists</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {genre.artists.map((artist, index) => (
               <motion.div
                 key={artist.name}
@@ -112,18 +111,9 @@ export default function GenrePage({ genre }: GenrePageProps) {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="overflow-hidden hover-elevate active-elevate-2 cursor-pointer" data-testid={`card-artist-${index}`}>
-                  <div className="aspect-square overflow-hidden">
-                    <img 
-                      src={artist.image} 
-                      alt={artist.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold mb-2">{artist.name}</h3>
-                    <p className="text-sm text-muted-foreground">{artist.bio}</p>
-                  </div>
+                <Card className="p-6 hover-elevate active-elevate-2 cursor-pointer" data-testid={`card-artist-${index}`}>
+                  <h3 className="text-xl font-semibold mb-2">{artist.name}</h3>
+                  <p className="text-sm text-muted-foreground">{artist.bio}</p>
                 </Card>
               </motion.div>
             ))}
