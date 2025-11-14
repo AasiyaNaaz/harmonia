@@ -1,17 +1,22 @@
 import { useState } from "react";
-import { Music, Menu, X } from "lucide-react";
+import { Music, Menu, X, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function Navigation() {
+interface NavigationProps {
+  darkMode: boolean;
+  setDarkMode: (value: boolean) => void;
+}
+
+export default function Navigation({ darkMode, setDarkMode }: NavigationProps) {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
     { label: "Home", path: "/" },
     { label: "Studio", path: "/studio" },
-    { label: "Genres", path: "/genres" }
+    // Removed Genres button here, you can re-add if fixed
   ];
 
   const genres = [
@@ -19,13 +24,15 @@ export default function Navigation() {
     { name: "Classical", path: "/genre/classical" },
     { name: "Electronic", path: "/genre/electronic" },
     { name: "Qawwali", path: "/genre/qawwali" },
-    { name: "Folk", path: "/genre/folk" }
+    { name: "Folk", path: "/genre/folk" },
   ];
 
   return (
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-16">
+
+          {/* Logo */}
           <Link href="/">
             <div className="flex items-center gap-2 cursor-pointer hover-elevate px-3 py-2 rounded-md" data-testid="link-home">
               <Music className="h-6 w-6 text-primary" />
@@ -33,6 +40,7 @@ export default function Navigation() {
             </div>
           </Link>
 
+          {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
             {navItems.map((item) => (
               <Link key={item.path} href={item.path}>
@@ -45,8 +53,19 @@ export default function Navigation() {
                 </Button>
               </Link>
             ))}
+
+            {/* Dark mode toggle button */}
+            <Button
+              variant="ghost"
+              onClick={() => setDarkMode(!darkMode)}
+              className="ml-4"
+              aria-label="Toggle dark mode"
+            >
+              {darkMode ? <Sun className="h-5 w-5 text-yellow-400" /> : <Moon className="h-5 w-5 text-gray-600" />}
+            </Button>
           </div>
 
+          {/* Mobile menu button */}
           <Button
             variant="ghost"
             size="icon"
@@ -56,6 +75,7 @@ export default function Navigation() {
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
+
         </div>
       </div>
 
@@ -80,6 +100,28 @@ export default function Navigation() {
                   </Button>
                 </Link>
               ))}
+
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setDarkMode(!darkMode);
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full justify-start flex items-center gap-1"
+                aria-label="Toggle dark mode"
+              >
+                {darkMode ? (
+                  <>
+                    <Sun className="h-5 w-5 text-yellow-400" /> Light Mode
+                  </>
+                ) : (
+                  <>
+                    <Moon className="h-5 w-5 text-gray-600" /> Dark Mode
+                  </>
+                )}
+              </Button>
+
+              {/* Genres section remains for mobile */}
               <div className="pt-4 border-t">
                 <p className="text-sm font-semibold text-muted-foreground mb-2 px-3">Genres</p>
                 {genres.map((genre) => (

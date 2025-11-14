@@ -1,33 +1,50 @@
+import React from "react";
 import { motion } from "framer-motion";
-import { Music, Guitar, Drum, Play, Sparkles } from "lucide-react";
+import { Music, Drum, Play, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link } from "wouter";
 import heroImage from "@assets/generated_images/Hero_musical_scene_bb6ab737.png";
 
-
 export default function HomePage() {
+  // Dark mode toggle state
+  const [darkMode, setDarkMode] = React.useState(() => {
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return true;
+    }
+    return false;
+  });
+  React.useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }   
+  }, [darkMode]);
+
   const features = [
     {
       icon: Music,
       title: "Explore Genres",
-      description: "Discover Pop, Classical, Electronic, Qawwali, and Folk music with rich history and culture",
-      gradient: "from-pink-500 to-purple-600"
+      description: "Discover Pop, Classical, Electronic, Qawwali, and Folk music",
+      gradient: "from-pink-500 to-purple-600",
+      path: "/genre/pop"
     },
     {
       icon: Drum,
       title: "Play Studio",
-      description: "Interactive virtual instruments with realistic sounds and animations",
-      gradient: "from-cyan-500 to-blue-600"
+      description: "Interactive virtual instruments with realistic sounds",
+      gradient: "from-cyan-500 to-blue-600",
+      path: "/studio"
     },
     {
       icon: Sparkles,
       title: "Learn Instruments",
-      description: "Hands-on tutorials and tips for every instrument in our collection",
-      gradient: "from-amber-500 to-orange-600"
+      description: "Hands-on tutorials and tips for every instrument",
+      gradient: "from-amber-500 to-orange-600",
+      path: "/tutorials"
     }
   ];
-
 
   const genres = [
     { name: "Pop", color: "from-pink-500 to-purple-600", path: "/genre/pop" },
@@ -37,56 +54,63 @@ export default function HomePage() {
     { name: "Folk", color: "from-amber-700 to-orange-500", path: "/genre/folk" }
   ];
 
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* DARK MODE TOGGLE */}
+      <div className="fixed top-5 right-6 z-50">
+        <button
+          onClick={() => setDarkMode((prev) => !prev)}
+          className="px-3 py-2 rounded bg-gray-300 dark:bg-gray-700 shadow text-black dark:text-white"
+        >
+          {darkMode ? "Light Mode" : "Dark Mode"}
+        </button>
+      </div>
+      {/* HERO SECTION */}
       <div 
-        className="relative min-h-[600px] flex items-center justify-center overflow-hidden"
+        className="relative min-h-[600px] flex flex-col items-center justify-center overflow-hidden"
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.7)), url(${heroImage})`,
+          backgroundImage: `linear-gradient(to bottom,rgba(40,30,80,0.6),rgba(50,60,108,0.82)), url(${heroImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center"
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background" />
-        
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto py-24">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white tracking-tight">
-              Discover Your Musical Journey
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Learn various music genres and play instruments virtually in our interactive GarageBand-inspired studio
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Link href="/studio">
-                <Button 
-                  size="lg" 
-                  className="text-lg px-8 bg-black bg-opacity-50 backdrop-blur-md border border-white/20 text-white hover:bg-black hover:bg-opacity-70"
-                  data-testid="button-start-studio"
-                >
-                  <Play className="mr-2 h-5 w-5" />
-                  Try the Studio
-                </Button>
-              </Link>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="text-lg px-8 bg-black bg-opacity-40 backdrop-blur-md border-white/30 text-white hover:bg-black hover:bg-opacity-60"
-                data-testid="button-explore-genres"
+
+        {/* Vibrant animated title */}
+        <motion.h1
+          className="relative z-10 text-6xl md:text-7xl font-extrabold bg-gradient-to-r from-yellow-300 via-pink-500 to-cyan-400 bg-clip-text text-transparent drop-shadow-lg select-none py-10 px-6"
+          style={{ fontFamily: "'Orbitron', 'Montserrat', sans-serif", letterSpacing: "0.06em" }}
+          animate={{
+            y: [0, -8, 0, 8, 0],
+            // subtle wave "musical" effect
+            textShadow: [
+              "0 2px 16px rgba(253, 224, 71,0.30), 0 4px 24px #f472b6",
+              "0 1px 8px #06b6d4",
+              "0 2px 28px #d946ef"
+            ]
+          }}
+          transition={{ duration: 2.5, repeat: Infinity, repeatType: "mirror" }}
+        >
+          Harmonica
+        </motion.h1>
+
+        <div className="relative z-10 text-center px-6 max-w-3xl mx-auto py-3">
+          <p className="text-xl md:text-2xl text-white/90 mb-8 font-semibold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+            Learn various music genres and play instruments virtually in our interactive GarageBand-inspired studio
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Link href="/studio">
+              <Button
+                size="lg"
+                className="text-lg px-8 bg-black bg-opacity-50 backdrop-blur-md border border-white/20 text-white hover:bg-black hover:bg-opacity-70"
               >
-                <Music className="mr-2 h-5 w-5" />
-                Explore Genres
+                <Play className="mr-2 h-5 w-5" />
+                Try the Studio
               </Button>
-            </div>
-          </motion.div>
+            </Link>
+            {/* Genre button removed */}
+          </div>
         </div>
-
-
         <motion.div
           className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
           animate={{ y: [0, 10, 0] }}
@@ -96,8 +120,8 @@ export default function HomePage() {
         </motion.div>
       </div>
 
-
-      <div className="py-24 px-6">
+      {/* MAIN CONTENT */}
+      <main className="py-24 px-6 flex-1">
         <div className="max-w-6xl mx-auto">
           <motion.div 
             className="text-center mb-16"
@@ -105,13 +129,11 @@ export default function HomePage() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Start Learning Today</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Montserrat', sans-serif" }}>Start Learning Today</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto" style={{ fontFamily: "'Montserrat', sans-serif" }}>
               Interactive, musical, and lively - everything you need to explore music
             </p>
           </motion.div>
-
-
           <div className="grid md:grid-cols-3 gap-8 mb-24">
             {features.map((feature, index) => (
               <motion.div
@@ -121,21 +143,19 @@ export default function HomePage() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.15 }}
               >
-                <Card className="p-8 h-full hover-elevate active-elevate-2 cursor-pointer" data-testid={`card-feature-${index}`}>
+                <Card className="p-8 h-full hover-elevate active-elevate-2 cursor-pointer">
                   <div className={`w-16 h-16 rounded-md bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-6`}>
                     <feature.icon className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="text-2xl font-semibold mb-3">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
+                  <h3 className="text-2xl font-semibold mb-3" style={{ fontFamily: "'Montserrat', sans-serif" }}>{feature.title}</h3>
+                  <p className="text-muted-foreground" style={{ fontFamily: "'Montserrat', sans-serif" }}>{feature.description}</p>
                 </Card>
               </motion.div>
             ))}
           </div>
-
-
-          <div className="mb-24">
-            <h2 className="text-3xl font-bold mb-8 text-center">Explore Music Styles</h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <section className="mb-24">
+            <h2 className="text-3xl font-bold mb-8 text-center" style={{ fontFamily: "'Montserrat', sans-serif" }}>Explore Music Styles</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8">
               {genres.map((genre, index) => (
                 <Link key={genre.name} href={genre.path}>
                   <motion.div
@@ -145,39 +165,51 @@ export default function HomePage() {
                     transition={{ delay: index * 0.1 }}
                   >
                     <Card 
-                      className={`p-6 text-center hover-elevate active-elevate-2 cursor-pointer bg-gradient-to-br ${genre.color} border-0`}
-                      data-testid={`card-genre-${genre.name.toLowerCase()}`}
+                      className={`p-10 text-center hover-elevate active-elevate-2 cursor-pointer bg-gradient-to-br ${genre.color} border-0 rounded-lg`}
                     >
-                      <h3 className="text-xl font-bold text-white">{genre.name}</h3>
+                      <h3 className="text-2xl font-extrabold text-white drop-shadow-lg" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                        {genre.name}
+                      </h3>
                     </Card>
                   </motion.div>
                 </Link>
               ))}
             </div>
-          </div>
-
-
-          <motion.div
-            className="text-center bg-gradient-to-r from-primary/10 to-accent/10 rounded-md p-12"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Ready to Create Music?
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Tap any instrument to learn and play! Start exploring your favorite instrument and style.
-            </p>
-            <Link href="/studio">
-              <Button size="lg" className="text-lg px-8" data-testid="button-cta-studio">
-                <Guitar className="mr-2 h-5 w-5" />
-                Launch Studio
-              </Button>
-            </Link>
-          </motion.div>
+          </section>
         </div>
-      </div>
+      </main>
+
+      {/* AMAZON-STYLE FOOTER */}
+      <footer className="mt-auto py-12 px-6 bg-[#222F3E] text-white">
+        <div className="max-w-6xl mx-auto grid gap-10 md:grid-cols-4 sm:grid-cols-2 text-sm">
+          <div>
+            <div className="font-bold mb-2">Get to Know Us</div>
+            <Link href="#"><div className="hover:underline cursor-pointer">About</div></Link>
+            <Link href="#"><div className="hover:underline cursor-pointer">Careers</div></Link>
+            <Link href="#"><div className="hover:underline cursor-pointer">Press Releases</div></Link>
+            <Link href="#"><div className="hover:underline cursor-pointer">Instruments Science</div></Link>
+          </div>
+          <div>
+            <div className="font-bold mb-2">Connect with Us</div>
+            <a href="https://facebook.com/" className="hover:underline block" target="_blank" rel="noopener noreferrer">Facebook</a>
+            <a href="https://twitter.com/" className="hover:underline block" target="_blank" rel="noopener noreferrer">Twitter</a>
+            <a href="https://instagram.com/" className="hover:underline block" target="_blank" rel="noopener noreferrer">Instagram</a>
+          </div>
+          <div>
+            <div className="font-bold mb-2">Make Music with Us</div>
+            <Link href="/studio"><div className="hover:underline cursor-pointer">Play Studio</div></Link>
+            <Link href="/tutorials"><div className="hover:underline cursor-pointer">Learn Instruments</div></Link>
+            <Link href="/genre/pop"><div className="hover:underline cursor-pointer">Genres</div></Link>
+          </div>
+          <div>
+            <div className="font-bold mb-2">Let Us Help You</div>
+            <Link href="#"><div className="hover:underline cursor-pointer">Your Account</div></Link>
+            <Link href="#"><div className="hover:underline cursor-pointer">Help</div></Link>
+            <Link href="#"><div className="hover:underline cursor-pointer">Feedback</div></Link>
+          </div>
+        </div>
+        <div className="text-center text-xs mt-8 opacity-70">© {new Date().getFullYear()} Harmonica • All rights reserved.</div>
+      </footer>
     </div>
   );
 }
