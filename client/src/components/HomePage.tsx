@@ -43,30 +43,35 @@ export default function HomePage({ darkMode, setDarkMode }: HomePageProps) {
 
         <motion.h1
           className="
-            relative z-10 text-7xl md:text-8xl font-extrabold 
-            bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-400 
+            relative z-10 text-7xl md:text-8xl font-extrabold
             bg-clip-text text-transparent select-none py-10 px-6
           "
           style={{
-            fontFamily: "'Audiowide', sans-serif",
-            letterSpacing: "0.08em",
+            fontFamily: "'Russo One', sans-serif",  // <-- bold but clean
+            letterSpacing: "0.06em",
+            backgroundImage: `
+              linear-gradient(
+                90deg,
+                #ff0077,
+                #ffae00,
+                #00ff95,
+                #00c3ff,
+                #b400ff
+              )
+            `,
+            backgroundSize: "400% 400%",
             textShadow: `
-              0 0 10px rgba(255, 200, 55, 0.4),
-              0 0 20px rgba(255, 105, 180, 0.35),
-              0 0 30px rgba(0, 255, 255, 0.35)
+              0 0 6px rgba(255,255,255,0.25),
+              0 0 12px rgba(255,255,255,0.15)
             `
           }}
           animate={{
-            y: [0, -8, 0, 8, 0],
-            scale: [1, 1.03, 1],
-            filter: [
-              "drop-shadow(0 0 6px rgba(255,255,255,0.3))",
-              "drop-shadow(0 0 12px rgba(255,255,255,0.45))",
-              "drop-shadow(0 0 6px rgba(255,255,255,0.3))"
-            ],
+            backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+            y: [0, -5, 0, 5, 0],
+            scale: [1, 1.02, 1],
           }}
           transition={{
-            duration: 3,
+            duration: 5,
             repeat: Infinity,
             repeatType: "mirror",
             ease: "easeInOut"
@@ -74,6 +79,10 @@ export default function HomePage({ darkMode, setDarkMode }: HomePageProps) {
         >
           Harmonica
         </motion.h1>
+
+
+
+
 
 
         <div className="relative z-10 text-center px-6 max-w-3xl mx-auto py-3">
