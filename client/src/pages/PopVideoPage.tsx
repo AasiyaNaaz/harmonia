@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import NavbarIcon from "@/components/NavbarIcon";
+import Navigation from "@/components/Navigation";
 
 export default function PopVideoPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -27,6 +28,7 @@ export default function PopVideoPage() {
 
   return (
     <>
+      <Navigation />
       <NavbarIcon />
 
       <div className="fixed inset-0 bg-black overflow-hidden flex items-center justify-center z-40">
