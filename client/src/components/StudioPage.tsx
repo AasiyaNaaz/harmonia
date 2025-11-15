@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import Piano from "@/components/instruments/Piano";
+import Piano from "@/components/instruments/piano/Piano";
 import DrumKit from "@/components/instruments/DrumKit";
 import Guitar from "@/components/instruments/Guitar";
 import Synthesizer from "@/components/instruments/Synthesizer";
