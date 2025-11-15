@@ -1,6 +1,7 @@
 import React from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
+import Navigation from "@/components/Navigation";
 
 interface GenreProps {
   genre: {
@@ -19,6 +20,7 @@ export default function GenrePage({ genre }: GenreProps) {
 
   return (
     <div className="min-h-screen">
+      <Navigation />
 
       {/* ⭐ CLEAN HERO SECTION — FULLY UNIFORM & CENTERED */}
       <motion.header

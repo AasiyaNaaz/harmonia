@@ -2,6 +2,7 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import NavbarIcon from "@/components/NavbarIcon";
+import Navigation from "@/components/Navigation";
 
 type Instrument = {
   name: string;
@@ -150,30 +151,6 @@ const quizQuestions: QuizQuestion[] = [
 ];
 
 export default function PopLearnPage() {
-  // theme state: 'light' | 'dark' persisted to localStorage and toggles the root `dark` class
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    try {
-      const saved = localStorage.getItem('theme');
-      if (saved === 'light' || saved === 'dark') return saved;
-    } catch {
-      // ignore
-    }
-    // fallback to system
-    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    return 'light';
-  });
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('theme', theme);
-    } catch {}
-    if (typeof document !== 'undefined') {
-      if (theme === 'dark') document.documentElement.classList.add('dark');
-      else document.documentElement.classList.remove('dark');
-    }
-  }, [theme]);
   const [selectedInst, setSelectedInst] = useState<Instrument | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -213,6 +190,13 @@ export default function PopLearnPage() {
   };
 
   const handleStartCourse = () => {
+    if (showCourse) {
+      // If already showing, hide the course
+      setShowCourse(false);
+      return;
+    }
+
+    // Otherwise initialize and show
     setShowCourse(true);
     setCurrentQuestionIndex(0);
     setSelectedAnswerIndex(null);
@@ -266,9 +250,10 @@ export default function PopLearnPage() {
 
   return (
     <>
+      <Navigation />
       <NavbarIcon />
 
-  <div className="px-6 py-12 max-w-7xl mx-auto pt-24 font-sans">
+      <div className="px-6 py-12 max-w-7xl mx-auto pt-24 font-sans">
         {/* Header + CTA */}
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between mb-10">
           <div className="flex items-center gap-4">
@@ -283,21 +268,13 @@ export default function PopLearnPage() {
             </div>
 
             <div className="ml-4 flex flex-col items-end">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setTheme((t) => (t === 'light' ? 'dark' : 'light'))}
-                  aria-label="Toggle theme"
-                  className="px-3 py-2 rounded-xl bg-gray-100 text-sm dark:bg-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700"
-                >
-                  {theme === 'light' ? '🌞 Light' : '🌙 Dark'}
-                </button>
                 <button
                   onClick={handleStartCourse}
                   className="px-5 py-2 rounded-2xl bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-500 text-white font-semibold shadow-lg hover:shadow-2xl hover:scale-[1.03] active:scale-95 transition-transform"
                 >
                   Learn with Quizzes
                 </button>
-              </div>
+                
             </div>
           </div>
         </div>

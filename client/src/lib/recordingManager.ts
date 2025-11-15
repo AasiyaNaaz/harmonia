@@ -1,4 +1,4 @@
-import { playPianoNote, playDrum, playGuitarString, playSynthPad } from "./audioUtils";
+import { playPianoNote, playDrum, playGuitarString, playSynthPad, resumeAudioContext } from "./audioUtils";
 
 export interface NoteEvent {
   timestamp: number;
@@ -65,11 +65,16 @@ export class RecordingManager {
     this.tracks.set(this.currentTrack, track);
   }
 
-  play() {
+  async play() {
     this.stop(); // Stop any current playback
     this.isPlaying = true;
     this.playbackStartTime = Date.now();
     this.notifyStateChange();
+
+    // Resume audio context in case it is suspended (browsers require user interaction to unlock audio)
+    try {
+      await resumeAudioContext();
+    } catch {}
     
     const track = this.tracks.get(this.currentTrack) || [];
     if (track.length === 0) {
@@ -127,7 +132,22 @@ export class RecordingManager {
         playDrum(event.data);
         break;
       case 'guitar':
-        playGuitarString(event.data);
+        // recorded guitar events may store an object { stringIndex, style, octave, semitoneOffset }
+        try {
+          if (typeof event.data === 'object' && event.data !== null) {
+            const { stringIndex, semitoneOffset, style, octave, frequency } = event.data as any;
+            // prefer calling with input and opts so style/octave are applied
+            const input = (typeof stringIndex === 'number') ? { stringIndex, semitoneOffset, frequency } : event.data;
+            playGuitarString(input as any, { style, octave });
+          } else {
+            playGuitarString(event.data as any);
+          }
+        } catch (err) {
+          // fallback
+          try {
+            playGuitarString(event.data as any);
+          } catch {}
+        }
         break;
       case 'synth':
         playSynthPad(event.data);
