@@ -4,13 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import SettingsModal from "@/components/SettingsModal";
+import { useAppContext } from "@/hooks/useAppContext";
 
-interface NavigationProps {
-  darkMode: boolean;
-  setDarkMode: (value: boolean) => void;
-}
-
-export default function Navigation({ darkMode, setDarkMode }: NavigationProps) {
+export default function Navigation() {
+  const { darkMode, setDarkMode } = useAppContext();
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);

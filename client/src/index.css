@@ -31,6 +31,24 @@
     radial-gradient(circle at top, rgba(255,255,255,0.4), transparent 60%),
     linear-gradient(to bottom, #fafafa, #f0f0ff, #e8e8ff),
     url('/assets/day.avif');
+
+  --primary: 262 80% 55%;
+  --primary-foreground: 0 0% 100%;
+  
+  --muted: 240 6% 95%;
+  --muted-foreground: 240 5% 40%;
+
+  --secondary: 240 6% 90%;
+  --secondary-foreground: 240 5% 20%;
+
+  --accent: 240 6% 90%;
+  --accent-foreground: 240 5% 20%;
+
+  --popover: var(--card);
+  --popover-foreground: var(--card-foreground);
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
 }
 
 /* ============================================================
@@ -51,6 +69,24 @@
     radial-gradient(circle at top, rgba(32,32,48,0.6), transparent 60%),
     linear-gradient(to bottom, #0a0a0f, #121125, #1a1935),
     url('/assets/starr.png');
+
+  --primary: 262 80% 75%;
+  --primary-foreground: 210 40% 98%;
+
+  --muted: 240 5% 18%;
+  --muted-foreground: 240 5% 70%;
+
+  --secondary: 240 5% 20%;
+  --secondary-foreground: 240 5% 90%;
+
+  --accent: 240 5% 20%;
+  --accent-foreground: 240 5% 90%;
+
+  --popover: var(--card);
+  --popover-foreground: var(--card-foreground);
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
 }
 
 @layer base {

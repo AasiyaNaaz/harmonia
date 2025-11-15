@@ -7,7 +7,7 @@ export default function Home() {
 
   return (
     <>
-      <Navigation darkMode={darkMode} setDarkMode={setDarkMode} />
+      <Navigation />
       <HomePage darkMode={darkMode} setDarkMode={setDarkMode} />
     </>
   );

@@ -124,7 +124,7 @@ export default function StudioPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="bg-gradient-to-br from-background via-muted to-primary/10">
       <div className="max-w-7xl mx-auto px-6 py-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
