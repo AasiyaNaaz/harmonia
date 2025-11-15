@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Music, Menu, X, Settings } from "lucide-react";
+import { Music, Menu, X, Settings, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -33,8 +33,13 @@ export default function Navigation() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
 
-            {/*LOGO — FULL GRADIENT*/} 
-            <Link href="/">
+            {/* BACK BUTTON + LOGO */}
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="icon" onClick={() => window.history.back()} className="mr-2">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+
+              <Link href="/">
               <motion.div
                 whileHover={{
                   boxShadow: "0 0 18px rgba(255,215,0,0.55)",
@@ -70,7 +75,8 @@ export default function Navigation() {
                 </span>
               </motion.div>
 
-            </Link>
+              </Link>
+            </div>
 
             {/* =========================
                 DESKTOP NAVIGATION

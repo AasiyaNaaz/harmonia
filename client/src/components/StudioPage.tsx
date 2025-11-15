@@ -23,6 +23,7 @@ import {
 import Piano from "@/components/instruments/piano/Piano";
 import DrumKit from "@/components/instruments/DrumKit";
 import Guitar from "@/components/instruments/Guitar";
+import GuitarGarageBand from "@/components/GuitarGarageBand";
 import Synthesizer from "@/components/instruments/Synthesizer";
 import { recordingManager } from "@/lib/recordingManager";
 import { useToast } from "@/hooks/use-toast";
@@ -52,8 +53,8 @@ export default function StudioPage() {
 
   const instruments: { id: InstrumentType; name: string; icon: string }[] = [
     { id: "piano", name: "Piano", icon: "🎹" },
-    { id: "drums", name: "Drums", icon: "🥁" },
     { id: "guitar", name: "Guitar", icon: "🎸" },
+    { id: "drums", name: "Drums", icon: "🥁" },
     { id: "synth", name: "Synth", icon: "🎛️" }
   ];
 
@@ -89,8 +90,11 @@ export default function StudioPage() {
       recordingManager.stop();
       setIsPlaying(false);
     } else {
-      recordingManager.play();
-      setIsPlaying(true);
+      // play may now be async because it resumes audio context
+      (async () => {
+        await recordingManager.play();
+        setIsPlaying(true);
+      })();
     }
   };
 
@@ -164,10 +168,16 @@ export default function StudioPage() {
 
           <Card className="p-8 min-h-[400px] flex items-center justify-center">
             {activeInstrument === "piano" && <Piano />}
+            {activeInstrument === "guitar" && <GuitarGarageBand />}
             {activeInstrument === "drums" && <DrumKit />}
-            {activeInstrument === "guitar" && <Guitar />}
+            {activeInstrument === "synth" && <Synthesizer />}
             {activeInstrument === "synth" && <Synthesizer />}
           </Card>
+          {activeInstrument === 'guitar' && (
+            <div className="text-center mt-3 text-sm text-muted-foreground">
+              Having trouble hearing audio? Click anywhere on the page to unlock sound and then press Record/Play.
+            </div>
+          )}
 
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-6">

@@ -6,6 +6,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/hooks/useAppContext";
+import GuitarGarageBand from "@/components/GuitarGarageBand";  
 
 // Pages
 import Home from "@/pages/Home";
@@ -30,7 +31,9 @@ function Router() {
       <Route path="/genre/pop/learn" component={PopLearnPage} />
 
       {/* All other genres */}
-      <Route path="/genre/:genre" component={GenrePageWrapper} />
+  <Route path="/genre/:genre" component={GenrePageWrapper} />
+  {/* wouter Route uses `component` not `element` */}
+  <Route path="/guitar" component={GuitarGarageBand} />
 
       {/* Default /404 page */}
       <Route component={NotFound} />
