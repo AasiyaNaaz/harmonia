@@ -15,6 +15,8 @@ import GenrePageWrapper from "@/pages/GenrePageWrapper";
 import NotFound from "@/pages/not-found";
 import PopVideoPage from "@/pages/PopVideoPage";
 import PopLearnPage from "@/pages/PopLearnPage";
+//import ClassicalVideoPage from "@/pages/ClassicalVideoPage";
+import ClassicalLearnPage from "@/pages/ClassicalLearnPage";
 
 function Router() {
   return (
@@ -34,6 +36,10 @@ function Router() {
   <Route path="/genre/:genre" component={GenrePageWrapper} />
   {/* wouter Route uses `component` not `element` */}
   <Route path="/guitar" component={GuitarGarageBand} />
+
+<Route path="/genre/classical/info" component={GenrePageWrapper} />
+<Route path="/genre/classical/learn" component={ClassicalLearnPage} />
+
 
       {/* Default /404 page */}
       <Route component={NotFound} />

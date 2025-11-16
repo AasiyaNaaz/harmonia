@@ -8,7 +8,7 @@ import { useAppContext } from "@/hooks/useAppContext";
 
 export default function Navigation() {
   const { darkMode, setDarkMode } = useAppContext();
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
@@ -51,7 +51,6 @@ export default function Navigation() {
                   px-5 py-2 rounded-xl border border-transparent
                 "
               >
-                {/* COLORFUL MUSIC NOTE */}
                 <span
                   className="
                     text-3xl font-extrabold
@@ -63,7 +62,6 @@ export default function Navigation() {
                   ♪
                 </span>
 
-                {/* HARMONICA TEXT */}
                 <span
                   className="
                     text-3xl font-extrabold tracking-wide
@@ -74,13 +72,12 @@ export default function Navigation() {
                   Harmonica
                 </span>
               </motion.div>
-
               </Link>
             </div>
 
             {/* =========================
                 DESKTOP NAVIGATION
-            ========================== */}
+            ========================= */}
             <div className="hidden md:flex items-center gap-3">
 
               {navItems.map((item) => {
@@ -117,6 +114,24 @@ export default function Navigation() {
                 );
               })}
 
+              {/* ⭐ CLASSICAL LEARN BUTTON (DESKTOP) */}
+              <motion.div
+                whileHover={{
+                  scale: 1.12,
+                  boxShadow: darkMode
+                    ? "0 0 14px rgba(255,255,255,0.45)"
+                    : "0 0 14px rgba(0,0,0,0.25)"
+                }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setLocation("/genre/classical/learn")}
+                className="
+                  px-5 py-2 rounded-xl text-lg font-semibold cursor-pointer
+                  transition-all border text-primary hover:text-primary/80
+                "
+              >
+                Classical Learn
+              </motion.div>
+
               {/* SETTINGS BUTTON */}
               <motion.button
                 whileHover={{ rotate: 20, scale: 1.15 }}
@@ -134,7 +149,7 @@ export default function Navigation() {
 
             {/* =========================
                 MOBILE TOGGLE BUTTON
-            ========================== */}
+            ========================= */}
             <Button
               variant="ghost"
               size="icon"
@@ -149,7 +164,7 @@ export default function Navigation() {
 
         {/* =========================
             MOBILE MENU
-        ========================== */}
+        ========================= */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
@@ -190,6 +205,17 @@ export default function Navigation() {
                     </Link>
                   ))}
                 </div>
+
+                {/* ⭐ CLASSICAL LEARN BUTTON (MOBILE) */}
+                <Link href="/genre/classical/learn">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-sm text-primary"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Classical Learn
+                  </Button>
+                </Link>
 
                 {/* SETTINGS */}
                 <Button

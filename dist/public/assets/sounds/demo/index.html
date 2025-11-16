@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GarageBand Lite: Multi-Instrument Synth Demo</title>
+<style>
+  body {
+    margin: 0; padding: 24px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #3f2b96, #a8c0ff);
+    color: #f0e6ff;
+    display: flex; justify-content: center;
+  }
+  #app {
+    max-width: 720px; width: 100%;
+    background: #34255b;
+    border-radius: 20px;
+    box-shadow: 0 10px 35px rgba(0,0,50,0.7);
+    padding: 24px;
+  }
+  h1 {
+    font-weight: 900;
+    margin-bottom: 12px;
+    text-align: center;
+    user-select: none;
+  }
+  button {
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: #6c5ce7;
+    border: none;
+    border-radius: 24px;
+    padding: 1rem 2.4rem;
+    color: white;
+    font-weight: 900;
+    font-size: 1.3rem;
+    box-shadow: 0 8px 24px rgba(108, 92, 231, 0.7);
+    cursor: pointer;
+    user-select: none;
+    margin: auto;
+    display: block;
+    transition: background-color 0.3s;
+  }
+  .btn-primary:hover {
+    background: #4834d4;
+  }
+
+  /* Instrument Selector Carousel */
+  .carousel {
+    display: flex;
+    gap: 32px;
+    overflow-x: auto;
+    padding: 12px 0;
+    margin-bottom: 24px;
+  }
+  .carousel-item {
+    flex: 0 0 auto;
+    width: 88px;
+    height: 88px;
+    border-radius: 18px;
+    background: rgba(255 255 255 / 0.12);
+    box-shadow: 0 0 14px rgba(108, 92, 231, 0.25);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #c2bdfa;
+    font-weight: 700;
+    user-select: none;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  .carousel-item.selected {
+    background: #6c5ce7;
+    color: #fff;
+    box-shadow: 0 0 20px #45326b;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .control-btn {
+    border: none;
+    border-radius: 18px;
+    padding: 12px 24px;
+    background: #553e99;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 4px 18px rgba(85, 62, 153, 0.85);
+    transition: background-color 0.2s;
+  }
+  .control-btn:hover {
+    background: #34255b;
+  }
+
+  /* Volume sliders */
+  .mix-controls {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 32px;
+  }
+  .mix-slider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #cbb3ff;
+    font-weight: 600;
+  }
+  input[type=range] {
+    margin-top: 8px;
+  }
+
+  /* Instrument Sections */
+  .instrument-ui {
+    text-align: center;
+    user-select: none;
+  }
+
+  /* Guitar Strings - horizontal buttons */
+  .guitar-strings {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    margin: 24px 0;
+  }
+  .guitar-string-btn {
+    background: #9c77ff;
+    border: none;
+    border-radius: 28px;
+    padding: 20px 34px;
+    color: white;
+    font-weight: bold;
+    font-size: 1.15rem;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(156,119,255,0.8);
+    user-select: none;
+    transition: background-color 0.25s;
+  }
+  .guitar-string-btn:hover {
+    background: #6c5de7;
+  }
+
+  /* Piano keyboard */
+  .piano-keys {
+    position: relative;
+    user-select: none;
+    max-width: 720px;
+    margin: 0 auto;
+    height: 200px;
+  }
+  .white-key {
+    background: linear-gradient(180deg, #fff 0%, #e6e6e6 100%);
+    border: 1px solid #bbb;
+    box-shadow: 0 8px 12px rgba(0,0,0,0.2);
+    width: 56px;
+    height: 200px;
+    display: inline-block;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+  }
+  .white-key.pressed {
+    background: #b0a9ff;
+    box-shadow: inset 0 0 20px #756fff;
+  }
+  .black-key {
+    position: absolute;
+    top: 0;
+    width: 36px;
+    height: 130px;
+    background: linear-gradient(180deg, #222 0%, #5151a1 100%);
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.8);
+    cursor: pointer;
+    z-index: 2;
+  }
+  .black-key.pressed {
+    background: #8f88ff;
+    box-shadow: inset 0 0 20px #7a74ff;
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script type="text/javascript">
+  // Simple React substitute using vanilla JS for demo
+  const GUITAR_STRINGS_FREQ = [329.63, 246.94, 196, 146.83, 110, 82.41];
+  const PIANO_KEYS = [
+    { note: 'C4', freq: 261.63 }, { note: 'C#4', freq: 277.18, black: true, leftOffset: 40 },
+    { note: 'D4', freq: 293.66 }, { note: 'D#4', freq: 311.13, black: true, leftOffset: 96 },
+    { note: 'E4', freq: 329.63 }, { note: 'F4', freq: 349.23 },
+    { note: 'F#4', freq: 369.99, black: true, leftOffset: 208 },
+    { note: 'G4', freq: 392 }, { note: 'G#4', freq: 415.3, black: true, leftOffset: 264 },
+    { note: 'A4', freq: 440 }, { note: 'A#4', freq: 466.16, black: true, leftOffset: 320 },
+    { note: 'B4', freq: 493.88 }, { note: 'C5', freq: 523.25 },
+  ];
+
+  // Audio context singleton
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  const audioCtx = new AudioContext();
+  const guitarGain = audioCtx.createGain();
+  const pianoGain = audioCtx.createGain();
+  guitarGain.connect(audioCtx.destination);
+  pianoGain.connect(audioCtx.destination);
+  guitarGain.gain.value = 0.7;
+  pianoGain.gain.value = 0.7;
+
+  // Record/play state
+  let recording = false;
+  let playing = false;
+  let recordStart = 0;
+  let recordedNotes = [];
+  let playTimeouts = [];
+
+  const app = document.getElementById('app');
+
+  function createButton(label, cb, extraClasses='') {
+    const btn = document.createElement('button');
+    btn.textContent = label;
+    btn.className = extraClasses;
+    btn.onclick = cb;
+    return btn;
+  }
+
+  // Play synth note helper
+  function playSynth(freq, instrument) {
+    if (!audioCtx) return;
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    osc.type = instrument === 'guitar' ? 'triangle' : 'sine';
+
+    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.7, audioCtx.currentTime + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
+
+    osc.connect(gain);
+
+    if (instrument === 'guitar') guitarGain.connect(gain);
+    else pianoGain.connect(gain);
+
+    gain.connect(audioCtx.destination);
+
+    osc.start();
+    osc.stop(audioCtx.currentTime + 1.5);
+
+    osc.onended = () => {
+      osc.disconnect();
+      gain.disconnect();
+    };
+
+    if (recording) {
+      const time = performance.now() - recordStart;
+      recordedNotes.push({ freq, instrument, time });
+    }
+  }
+
+  // Clear UI
+  function clearUI() {
+    app.innerHTML = '';
+  }
+
+  // Start screen button
+  function renderStart() {
+    clearUI();
+    const btn = createButton('Play Instruments', () => renderInstrumentSelector(), 'btn-primary');
+    app.appendChild(btn);
+  }
+
+  // Instrument selector bar
+  function renderInstrumentSelector(selected='guitar') {
+    clearUI();
+    const title = document.createElement('h1');
+    title.textContent = 'Select an Instrument';
+    app.appendChild(title);
+
+    const carousel = document.createElement('div');
+    carousel.className = 'carousel';
+
+    function createInstButton(id, iconSVG, label, isSelected) {
+      const container = document.createElement('div');
+      container.className = 'carousel-item' + (isSelected ? ' selected' : '');
+      container.role = 'button';
+      container.tabIndex = 0;
+      container.onclick = () => {
+        renderInstrumentUI(id);
+        renderInstrumentSelector(id);
+      };
+      container.setAttribute('aria-label', 'Select ' + label);
+
+      container.appendChild(iconSVG);
+      const textDiv = document.createElement('div');
+      textDiv.textContent = label;
+      container.appendChild(textDiv);
+      return container;
+    }
+
+    const guitarIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    guitarIcon.setAttribute('width', '48');
+    guitarIcon.setAttribute('height', '48');
+    guitarIcon.setAttribute('viewBox', '0 0 24 24');
+    guitarIcon.setAttribute('fill', 'none');
+    guitarIcon.setAttribute('stroke', selected === 'guitar' ? '#fff' : '#8e7be9');
+    guitarIcon.setAttribute('stroke-width', '2');
+    guitarIcon.setAttribute('stroke-linecap', 'round');
+    guitarIcon.setAttribute('stroke-linejoin', 'round');
+    guitarIcon.innerHTML = '<path d="M17 2l4 4-9 9-4-4 9-9z"/><path d="M3 21l4-4"/>';
+    carousel.appendChild(createInstButton('guitar', guitarIcon, 'Guitar', selected === 'guitar'));
+
+    const pianoIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    pianoIcon.setAttribute('width', '48');
+    pianoIcon.setAttribute('height', '48');
+    pianoIcon.setAttribute('viewBox', '0 0 24 24');
+    pianoIcon.setAttribute('fill', 'none');
+    pianoIcon.setAttribute('stroke', selected === 'piano' ? '#fff' : '#5ed3b3');
+    pianoIcon.setAttribute('stroke-width', '2');
+    pianoIcon.setAttribute('stroke-linecap', 'round');
+    pianoIcon.setAttribute('stroke-linejoin', 'round');
+    pianoIcon.innerHTML = '<rect x="2" y="7" width="20" height="10"/><line x1="6" y1="7" x2="6" y2="17"/><line x1="10" y1="7" x2="10" y2="17"/><line x1="14" y1="7" x2="14" y2="17"/><line x1="18" y1="7" x2="18" y2="17"/>';
+    carousel.appendChild(createInstButton('piano', pianoIcon, 'Piano', selected === 'piano'));
+
+    app.appendChild(carousel);
+
+    // Initial instrument UI render
+    renderInstrumentUI(selected);
+  }
+
+  // Render keys/buttons for instruments
+  function renderInstrumentUI(inst) {
+    // Clear previous instrument UI & controls
+    const oldUI = document.getElementById('instrument-ui');
+    if(oldUI) oldUI.remove();
+
+    const cont = document.createElement('div');
+    cont.id = 'instrument-ui';
+    app.appendChild(cont);
+
+    if (inst === 'guitar') {
+      const guitarDiv = document.createElement('div');
+      guitarDiv.className = 'guitar-strings';
+      GUITAR_STRINGS_FREQ.forEach((freq, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'guitar-string-btn';
+        btn.textContent = `String ${idx + 1}`;
+        btn.onclick = () => playSynth(freq, 'guitar');
+        guitarDiv.appendChild(btn);
+      });
+      cont.appendChild(guitarDiv);
+    } else if (inst === 'piano') {
+      const pianoDiv = document.createElement('div');
+      pianoDiv.className = 'piano-keys';
+      PIANO_KEYS.forEach(({note, freq}) => {
+        const btn = document.createElement('button');
+        btn.className = 'white-key';
+        btn.textContent = note;
+        btn.onclick = () => playSynth(freq, 'piano');
+        pianoDiv.appendChild(btn);
+      });
+      cont.appendChild(pianoDiv);
+    }
+  }
+
+  renderStart();  
+</script>
+</body>
+</html>
