@@ -1,0 +1,70 @@
+Create a modern, playful, GarageBand-inspired interactive music website with a colorful, touch-friendly UI. The site lets users explore, learn, and interact with music styles—including Pop, Classical, Electronic, Qawalli, Folk.
+
+Site requirements:
+
+Homepage: Friendly welcome, inviting graphics, great color. Briefly explain what the app does (learn various music genres, and play instruments virtually).
+
+Learn/Explore Styles: “Learn a Style” page lists: Pop, Classical, Electronic, Qawalli, Folk. Clicking a style reveals:
+
+Brief history & main characteristics of the style.
+
+Notable artists in that field (list and portrait/photo).
+
+Most popular instruments in that style (with pro-quality images).
+
+“How to use this instrument” animated/tutorial section.
+
+Listen button for each, with a sample audio demo of the instrument.
+
+GarageBand-style studio page: vibrant, fun interactive section emulating a real music studio:
+
+Piano with glowing keys.
+
+Electric and acoustic guitar with animating strings.
+
+Drums with realistic drum kit visuals and areas; tapping each area produces the respective sound like the real instrument.
+
+Bass, synth, and world instruments (e.g. koto, erhu, taiko) with touch effects.
+
+Microphone with live vocal FX (use pre-built audio demos if live is not possible).
+
+Smart virtual instruments—auto chords, drum machines, and interactive pads.
+
+Record - Play - Loop - FX - Tempo - Tracks - Instruments buttons, playful icons.
+
+Cute message: “Tap any instrument to learn and play!”
+
+Animations: Keys light up, strings vibrate, drums bounce, notes float up, soft neon glows, and animated waveforms that move with input.
+
+UI Style: Friendly and rounded (like GarageBand/iPad), soft neon gradients, 3D/2.5D instrument visuals. Modern, clean nav and all sections feel like a game.
+
+User flows: On any instrument, user can (1) tap to play, (2) see brief pop-up history/tips, (3) listen to style-appropriate samples, (4) record or mix simple ideas.
+
+Include instrument/genre-changing navigation, so a user can go:
+Home → Pick Style → Explore Style details → Try or Play GarageBand page for that style.
+
+Everything must feel interactive, musical, lively, fun—NOT dry or classroom-like.
+
+Add prominent call to action for learning and engagement: “Try exploring your favorite instrument and style!”
+
+Design/branding:
+
+Energetic, musical, professional visuals.
+
+Each music style has its own color/vibe for its subpages.
+
+Animations and micro-interactions throughout.
+
+All images and samples legal/free for use, or use public domain placeholders.
+
+Key features to request in the prompt:
+
+Modern React (with Vite or Next.js), TypeScript, TailwindCSS for styling (match your stack).
+
+Fully responsive friendly UI for desktop and mobile.
+
+Include rich image assets, icons, and audio samples, easy to swap or update.
+
+A super interactive Drum Kit with clickable and visually realistic drums producing real drum sounds for each hit area.
+
+GarageBand-style interactive studio UI fully playable for every instrument and style.
