@@ -132,7 +132,7 @@ Harmonica helps users:
 
 # 🔧 Technical Architecture (High-Level)
 
-## Frontend (Current)
+## Frontend 
 
 * **React + TypeScript**
 * **TailwindCSS** for styling
@@ -140,7 +140,7 @@ Harmonica helps users:
 * **Audio playground** using custom components (Piano, Rhythm Pads, Waveform Visualizers)
 * **Client-side audio processing** (basic transformations, previews)
 
-## Backend (Coming Soon)
+## Backend
 
 * **Python API** for:
   * Audio extraction
@@ -161,7 +161,7 @@ Harmonica helps users:
   * Auth & sessions
 * **Cloud storage** for audio files
 
-# 🏗️ Setup Instructions (Developer-Friendly)
+# 🏗️ Setup Instructions 
 
 ## 1. Clone the Repo
 
@@ -179,31 +179,21 @@ npm install
 ## 3. Run Frontend
 
 ```
-npm run dev
+ npx tsx server/index.ts
 ```
 
-## 4. Backend (when added)
-
-Placeholder for future:
+## 4. Backend 
 
 ```
-python api/server.py
+cd backend
+python -m venv venv
+.\venv\Scripts\activate
+pip install -r requirements.txt
+python -m uvicorn server:app --reload --port 8000
 ```
 
-## 5. Environment Variables
 
-Create a `.env` file:
-
-```
-VITE_API_URL=http://localhost:5000
-VITE_FIREBASE_KEY=...
-```
-
----
-
-# 📁 Proposed Folder Structure (Flexible / Future-Proof)
-
-Since backend & frontend aren't united yet, here's a clean **future-friendly** structure that won’t break anything later.
+# 📁 Proposed Folder Structure 
 
 ```
 harmonica/
@@ -219,21 +209,19 @@ harmonica/
 │   │   └── main.tsx         
 │   └── public/
 │
-├── backend/ (future)        # Python backend
-│   ├── models/              # AI models (pop, metal…)
-│   ├── processing/          # Librosa, feature extraction
-│   ├── routes/              # API endpoints
-│   └── server.py
+├── backend/                 # Python backend
+│   ├── seperated/           # Seperated instruments of input audios
+│   ├── server.py            # Main function for midi to audio
+│   └── requirements.txt
 │
-├── converters/ (optional)   # Standalone conversion scripts
+├── scripts/                 # extractors demucs pitch crepe convertors.
 │
-├── docs/                    # All docs (README, architecture…)
+├── soundfonts/              # Soundfont files
+│
+├── output/                  # Final converted audio + instrument audio + midi files raw
 │
 └── README.md
 ```
 * Learn how different music styles work
 * Discover what style fits your voice best
 
-### Tech
-
-React • Tailwind • Framer Motion • Python • AI Models

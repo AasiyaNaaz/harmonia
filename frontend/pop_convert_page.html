@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Harmonica - AI Arranger</title>
+
+<style>
+body { background:#0b0b0b; color:#eee; font-family:Arial; padding:20px; }
+h1 { margin-bottom:20px; }
+.card {
+  background:#141414; border:1px solid #222; border-radius:10px;
+  padding:15px; margin-bottom:20px;
+}
+button {
+  padding:10px 16px; background:#1f6feb; border:none; color:white;
+  border-radius:8px; cursor:pointer; margin-top:10px;
+}
+#logBox {
+  background:#000; padding:10px; height:200px; overflow:auto;
+  white-space:pre-wrap; border-radius:6px;
+}
+audio { margin-top:8px; width:100%; }
+</style>
+</head>
+
+<body>
+
+<h1> POP STYLE CONVERTOR </h1>
+
+<!-- Upload -->
+<div class="card">
+  <h3>1) Upload Song</h3>
+  <input type="file" id="songFile">
+  <button id="uploadBtn" type="button">Upload</button>
+</div>
+
+<!-- Style -->
+<div class="card">
+  <h3>2) Style</h3>
+  <select id="styleSelect">
+    <option value="poprock">Pop Rock</option>
+    <option value="edm">EDM Pop</option>
+    <option value="bollywood">Bollywood Chill</option>
+    <option value="lofi">Lo-Fi Pop</option>
+  </select>
+</div>
+
+<!-- Mixer -->
+<div class="card">
+  <h3>3) Instrument Mixer</h3>
+
+  Piano <input type="range" min="0" max="2" step="0.1" value="1" id="mixPiano"><br>
+  Guitar <input type="range" min="0" max="2" step="0.1" value="1" id="mixGuitar"><br>
+  Bass <input type="range" min="0" max="2" step="0.1" value="1" id="mixBass"><br>
+  Synth <input type="range" min="0" max="2" step="0.1" value="1" id="mixSynth"><br>
+  Drums <input type="range" min="0" max="2" step="0.1" value="1" id="mixDrums"><br>
+</div>
+
+<!-- Autotune -->
+<div class="card">
+  <h3>4) Autotune / Vocal Style</h3>
+  <label><input type="radio" name="autotune" value="subtle" checked> Subtle (natural)</label><br>
+  <label><input type="radio" name="autotune" value="medium"> Medium (clear)</label><br>
+  <label><input type="radio" name="autotune" value="hard"> Hard (T-Pain style)</label><br>
+  <label><input type="radio" name="autotune" value="all"> Generate ALL (subtle + medium + hard)</label>
+</div>
+
+<!-- Run Pipeline -->
+<div class="card">
+  <h3>5) Run Arrangement</h3>
+  <button id="runBtn">Arrange Song</button>
+  <span id="status">idle</span>
+</div>
+
+<!-- Logs -->
+<div class="card">
+  <h3>6) Live Logs</h3>
+  <div id="logBox">Connecting...</div>
+</div>
+
+<!-- Outputs -->
+<div class="card">
+  <h3>7) Output</h3>
+  <div id="output"></div>
+</div>
+
+<script>
+/* ===========================
+   GLOBALS
+=========================== */
+const API = "http://127.0.0.1:8000";
+let songPath = "";
+
+/* ===========================
+   LOGGING (SSE)
+=========================== */
+function addLog(t) {
+  const el = document.getElementById("logBox");
+  el.textContent += t + "\n";
+  el.scrollTop = el.scrollHeight;
+}
+
+let evt = new EventSource(API + "/stream");
+evt.onmessage = (e)=>{
+  if (!e.data || e.data==="") return;
+  addLog(e.data);
+  if (e.data === "__PIPELINE_DONE__") {
+    document.getElementById("status").textContent = "idle";
+  }
+};
+
+/* ===========================
+   UPLOAD HANDLER
+=========================== */
+document.getElementById("uploadBtn").onclick = async ()=>{
+  const f = document.getElementById("songFile").files[0];
+  if (!f) return alert("Pick a file");
+
+  let fd = new FormData();
+  fd.append("file", f);
+
+  try {
+    let r = await fetch(API + "/upload/song", {method:"POST", body:fd});
+    let j = await r.json();
+    songPath = j.path;
+    addLog("[UPLOAD OK] " + songPath);
+  } catch(err) {
+    addLog("[UPLOAD FAIL] " + err);
+  }
+};
+
+/* ===========================
+   HELPER → GET AUTOTUNE MODE
+=========================== */
+function getAutotuneMode() {
+  const radios = document.getElementsByName("autotune");
+  for (const r of radios) if (r.checked) return r.value;
+  return "medium";
+}
+
+/* ===========================
+   RUN PIPELINE
+=========================== */
+document.getElementById("runBtn").onclick = async ()=>{
+  if (!songPath) return alert("Upload first!");
+
+  addLog("[UI] Starting arrangement...");
+  document.getElementById("status").textContent = "running";
+
+  let fd = new FormData();
+  fd.append("song", songPath);
+  fd.append("style", document.getElementById("styleSelect").value);
+  fd.append("piano", document.getElementById("mixPiano").value);
+  fd.append("guitar", document.getElementById("mixGuitar").value);
+  fd.append("bass", document.getElementById("mixBass").value);
+  fd.append("synth", document.getElementById("mixSynth").value);
+  fd.append("drums", document.getElementById("mixDrums").value);
+  fd.append("autotune_mode", getAutotuneMode());
+
+  let r = await fetch(API + "/run/arrange", { method:"POST", body:fd });
+  let j = await r.json();
+
+  if (j.error) { 
+    addLog("[UI ERROR] " + j.error);
+    document.getElementById("status").textContent = "idle";
+    return;
+  }
+
+  const out = document.getElementById("output");
+  out.innerHTML = "<strong>Outputs</strong><br>";
+
+  /* Instruments WAV */
+  if (j.instruments) {
+    out.innerHTML += `
+      <div><strong>Instruments:</strong> 
+        <a href="${API + "/download?file=" + encodeURIComponent(j.instruments)}">download</a>
+        <br><audio controls src="${API + "/download?file=" + encodeURIComponent(j.instruments)}"></audio>
+      </div><hr>
+    `;
+  }
+
+  /* Vocals (string OR dict) */
+  if (j.vocals) {
+    out.innerHTML += `<div><strong>Vocals:</strong><br>`;
+    if (typeof j.vocals === "string") {
+      out.innerHTML += `
+        <a href="${API + "/download?file=" + encodeURIComponent(j.vocals)}">download</a>
+        <br><audio controls src="${API + "/download?file=" + encodeURIComponent(j.vocals)}"></audio>
+      `;
+    } else {
+      for (const [k,v] of Object.entries(j.vocals)) {
+        out.innerHTML += `
+          <div style="margin-left:8px">${k}: 
+            <a href="${API + "/download?file=" + encodeURIComponent(v)}">download</a><br>
+            <audio controls src="${API + "/download?file=" + encodeURIComponent(v)}"></audio>
+          </div>
+        `;
+      }
+    }
+    out.innerHTML += `</div><hr>`;
+  }
+
+  /* Final mixes */
+  if (j.finals) {
+    out.innerHTML += `<div><strong>Final Mixes:</strong><br>`;
+    if (typeof j.finals === "string") {
+      out.innerHTML += `
+        <a href="${API + "/download?file=" + encodeURIComponent(j.finals)}">download</a>
+        <br><audio controls src="${API + "/download?file=" + encodeURIComponent(j.finals)}"></audio>
+      `;
+    } else {
+      for (const [k,v] of Object.entries(j.finals)) {
+        out.innerHTML += `
+          <div style="margin-left:8px">${k}: 
+            <a href="${API + "/download?file=" + encodeURIComponent(v)}">download</a><br>
+            <audio controls src="${API + "/download?file=" + encodeURIComponent(v)}"></audio>
+          </div>
+        `;
+      }
+    }
+    out.innerHTML += "</div>";
+  }
+
+  /* MIDI */
+  if (j.midi) {
+    out.innerHTML += `
+      <hr><div><strong>MIDI:</strong> 
+        <a href="${API + "/download?file=" + encodeURIComponent(j.midi)}">download</a>
+      </div>
+    `;
+  }
+
+  addLog("[UI] Output ready.");
+  document.getElementById("status").textContent = "idle";
+};
+</script>
+
+</body>
+</html>

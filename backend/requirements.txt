@@ -1,0 +1,37 @@
+# ---------- CORE ----------
+numpy==1.23.5
+scipy
+soundfile
+librosa==0.9.1
+pretty_midi
+mido
+pydub
+noisereduce
+
+# ---------- BACKEND ----------
+Flask
+Flask-Cors
+Werkzeug
+
+# ---------- PYTORCH (WINDOWS CPU) ----------
+torch==2.0.1+cpu
+torchvision==0.15.2+cpu
+torchaudio==2.0.2+cpu
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# ---------- STEM EXTRACTION ----------
+demucs==4.0.0
+
+# ---------- PITCH DETECTION (AUTOTUNE ENGINE) ----------
+torchcrepe==0.0.20
+
+# ---------- AUDIO TO MIDI ----------
+nnAudio==0.3.2
+
+# ---------- MIDI TO AUDIO ----------
+fluidsynth
+
+fastapi
+uvicorn
+
+python-multipart

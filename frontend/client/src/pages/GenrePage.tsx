@@ -114,8 +114,11 @@ export default function GenrePage({ genre }: GenreProps) {
             </button>
           )}
 
-          <button className="px-8 py-4 bg-gray-300 text-gray-700 rounded-xl text-lg font-semibold cursor-not-allowed shadow-sm">
-            Convert (Coming Soon)
+          <button
+            onClick={() => window.location.href = "http://localhost:8000/convert-page"}
+            className="px-8 py-4 bg-blue-600 text-white rounded-xl text-lg font-semibold shadow-lg hover:bg-blue-800 transition"
+          >
+            Convert
           </button>
         </div>
       </main>
