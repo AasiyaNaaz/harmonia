@@ -166,13 +166,14 @@ Harmonica helps users:
 ## 1. Clone the Repo
 
 ```
-git clone https://github.com/yourname/harmonica.git
+git clone https://github.com/AasiyaNaaz/harmonia.git
 cd harmonica
 ```
 
 ## 2. Install Dependencies
 
 ```
+cd frontend
 npm install
 ```
 
