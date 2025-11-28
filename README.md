@@ -182,6 +182,7 @@ npm install
 ```
  npx tsx server/index.ts
 ```
+In new terminal run the next commands
 
 ## 4. Backend 
 
