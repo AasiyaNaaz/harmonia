@@ -2,7 +2,6 @@ import React from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
-
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/hooks/useAppContext";
@@ -15,8 +14,9 @@ import GenrePageWrapper from "@/pages/GenrePageWrapper";
 import NotFound from "@/pages/not-found";
 import PopVideoPage from "@/pages/PopVideoPage";
 import PopLearnPage from "@/pages/PopLearnPage";
-//import ClassicalVideoPage from "@/pages/ClassicalVideoPage";
 import ClassicalLearnPage from "@/pages/ClassicalLearnPage";
+import VoiceGenreRandomAnalyzer from "@/pages/VoiceGenreRandomAnalyzer";
+
 
 function Router() {
   return (
@@ -31,6 +31,10 @@ function Router() {
       <Route path="/genre/pop" component={PopVideoPage} />
       <Route path="/genre/pop/info" component={GenrePageWrapper} />
       <Route path="/genre/pop/learn" component={PopLearnPage} />
+
+
+ <Route path="/voice-genre-random" component={VoiceGenreRandomAnalyzer} />
+
 
       {/* All other genres */}
   <Route path="/genre/:genre" component={GenrePageWrapper} />
