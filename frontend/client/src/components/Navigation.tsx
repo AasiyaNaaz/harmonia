@@ -6,11 +6,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import SettingsModal from "@/components/SettingsModal";
 import { useAppContext } from "@/hooks/useAppContext";
 
+
 export default function Navigation() {
   const { darkMode, setDarkMode } = useAppContext();
   const [location, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+
 
   const navItems = [
     { label: "Home", path: "/" },
@@ -19,13 +21,14 @@ export default function Navigation() {
     { label: "Mini Games", path: "" },
   ];
 
+
   const genres = [
     { name: "Pop", path: "/genre/pop" },
-    { name: "Classical", path: "/genre/classical" },
     { name: "Electronic", path: "/genre/electronic" },
     { name: "Qawwali", path: "/genre/qawwali" },
     { name: "Folk", path: "/genre/folk" },
   ];
+
 
   return (
     <>
@@ -33,55 +36,61 @@ export default function Navigation() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
 
+
             {/* BACK BUTTON + LOGO */}
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="icon" onClick={() => window.history.back()} className="mr-2">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
 
-              <Link href="/">
-              <motion.div
-                whileHover={{
-                  boxShadow: "0 0 18px rgba(255,215,0,0.55)",
-                  borderColor: "rgba(255,215,0,0.8)"
-                }}
-                transition={{ duration: 0.25 }}
-                className="
-                  flex items-center gap-3 cursor-pointer 
-                  px-5 py-2 rounded-xl border border-transparent
-                "
-              >
-                <span
-                  className="
-                    text-3xl font-extrabold
-                    bg-gradient-to-r from-pink-400 via-yellow-300 to-cyan-400
-                    bg-clip-text text-transparent drop-shadow-lg
-                    select-none
-                  "
-                >
-                  ♪
-                </span>
 
-                <span
+              <Link href="/">
+                <motion.div
+                  whileHover={{
+                    boxShadow: "0 0 18px rgba(255,215,0,0.55)",
+                    borderColor: "rgba(255,215,0,0.8)"
+                  }}
+                  transition={{ duration: 0.25 }}
                   className="
-                    text-3xl font-extrabold tracking-wide
-                    bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-400
-                    bg-clip-text text-transparent drop-shadow-xl
+                    flex items-center gap-3 cursor-pointer 
+                    px-5 py-2 rounded-xl border border-transparent
                   "
                 >
-                  Harmonica
-                </span>
-              </motion.div>
+                  <span
+                    className="
+                      text-3xl font-extrabold
+                      bg-gradient-to-r from-pink-400 via-yellow-300 to-cyan-400
+                      bg-clip-text text-transparent drop-shadow-lg
+                      select-none
+                    "
+                  >
+                    ♪
+                  </span>
+
+
+                  <span
+                    className="
+                      text-3xl font-extrabold tracking-wide
+                      bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-400
+                      bg-clip-text text-transparent drop-shadow-xl
+                    "
+                  >
+                    Harmonica
+                  </span>
+                </motion.div>
               </Link>
             </div>
+
 
             {/* =========================
                 DESKTOP NAVIGATION
             ========================= */}
             <div className="hidden md:flex items-center gap-3">
 
+
               {navItems.map((item) => {
                 const active = location === item.path;
+
 
                 return (
                   <Link key={item.path} href={item.path}>
@@ -114,23 +123,6 @@ export default function Navigation() {
                 );
               })}
 
-              {/* ⭐ CLASSICAL LEARN BUTTON (DESKTOP) */}
-              <motion.div
-                whileHover={{
-                  scale: 1.12,
-                  boxShadow: darkMode
-                    ? "0 0 14px rgba(255,255,255,0.45)"
-                    : "0 0 14px rgba(0,0,0,0.25)"
-                }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setLocation("/genre/classical/learn")}
-                className="
-                  px-5 py-2 rounded-xl text-lg font-semibold cursor-pointer
-                  transition-all border text-primary hover:text-primary/80
-                "
-              >
-                Classical Learn
-              </motion.div>
 
               {/* SETTINGS BUTTON */}
               <motion.button
@@ -147,6 +139,7 @@ export default function Navigation() {
               </motion.button>
             </div>
 
+
             {/* =========================
                 MOBILE TOGGLE BUTTON
             ========================= */}
@@ -159,8 +152,10 @@ export default function Navigation() {
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
 
+
           </div>
         </div>
+
 
         {/* =========================
             MOBILE MENU
@@ -174,6 +169,7 @@ export default function Navigation() {
               className="md:hidden border-t bg-card shadow-lg"
             >
               <div className="px-6 py-4 space-y-3">
+
 
                 {navItems.map((item) => {
                   const active = location === item.path;
@@ -189,6 +185,7 @@ export default function Navigation() {
                     </Link>
                   );
                 })}
+
 
                 {/* GENRES */}
                 <div className="pt-4 border-t">
@@ -206,16 +203,6 @@ export default function Navigation() {
                   ))}
                 </div>
 
-                {/* ⭐ CLASSICAL LEARN BUTTON (MOBILE) */}
-                <Link href="/genre/classical/learn">
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start text-sm text-primary"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Classical Learn
-                  </Button>
-                </Link>
 
                 {/* SETTINGS */}
                 <Button
@@ -234,6 +221,7 @@ export default function Navigation() {
           )}
         </AnimatePresence>
       </nav>
+
 
       {/* SETTINGS MODAL */}
       <SettingsModal
