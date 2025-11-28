@@ -21,7 +21,7 @@ type Genre = {
 export default function HomePage({ darkMode, setDarkMode }: HomePageProps) {
   const genres: Genre[] = [
     { name: "Pop", icon: Music, color: "from-pink-500 to-purple-600", path: "/genre/pop" },
-    { name: "Classical", icon: Sparkles, color: "from-yellow-600 to-red-800", path: "/genre/classical" },
+    { name: "Classical", icon: Sparkles, color: "from-yellow-600 to-red-800", path: "/genre/classical/learn" },
     { name: "Electronic", icon: Drum, color: "from-cyan-400 to-blue-600", path: "/genre/electronic" },
     { name: "Qawwali", icon: Play, color: "from-emerald-500 to-amber-500", path: "/genre/qawwali" },
     { name: "Folk", icon: Music, color: "from-amber-700 to-orange-500", path: "/genre/folk" },
